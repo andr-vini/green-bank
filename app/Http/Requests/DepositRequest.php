@@ -3,9 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use App\Rules\ValidCPF;
 
-class UserRequest extends FormRequest
+class DepositRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,10 +22,8 @@ class UserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => ['required', 'email', 'unique:users,email'],
-            'password' => ['required'],
-            'cpf' => ['required', 'string', new ValidCPF(), 'unique:users,cpf'],
-            'name' => ['required', 'string']
+            'amount' => ['required']
         ];
     }
+
 }

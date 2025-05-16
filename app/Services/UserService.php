@@ -13,7 +13,7 @@ class UserService
             $user = User::create($data);
             return $user;
         } catch (Exception $e) {
-            \Log::error('Erro ao criar usuário: ' . $e->getMessage());
+            \Log::error('Erro ao criar usuário; Message: ' . $e->getMessage());
         }
     }
 }

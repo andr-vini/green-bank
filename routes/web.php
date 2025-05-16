@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\AccountController;
 
 Route::middleware('guest')->group(function(){
     Route::get('/login', function () {
@@ -20,4 +21,6 @@ Route::middleware('auth')->group(function(){
     });
 
     Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
+
+    Route::post('/deposit', [AccountController::class, 'makeDeposit'])->name('make.deposit');
 });

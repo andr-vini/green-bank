@@ -3,7 +3,7 @@
         <img src="/img/logo.png" alt="" class="w-15">
         <div class="ml-4">
             <span class="text-green-600 font-semibold text-lg block">PORTAL FGO</span>
-            <span class="text-gray-500 text-sm">asas</span>
+            <span class="text-gray-500 text-sm">{{ Auth::user()->name }}</span>
         </div>
     </header>
     <main>
