@@ -71,6 +71,9 @@ class AccountService
             $user_responsible = User::with('account')->find(Auth::id());
             $account_responsible = $user_responsible->account;
             $account_beneficiary = Account::with('user')->where('number', $data['account'])->first();
+            if(!$account_beneficiary){
+                throw new Exception("Conta não encontrada", 1);
+            }
             $user_beneficiary = $account_beneficiary->user;
             if($account_responsible->number == $account_beneficiary->number){
                 throw new Exception("Transferência para si próprio", 1);
@@ -96,7 +99,7 @@ class AccountService
             return $account_beneficiary;
             // $user_beneficiary 
         } catch (Exception $e) {
-            \Log::error("Erro ao fazer transferência da conta do usuário ($user_responsible->id) para a conta ($user_beneficiary->id; Message: " . $e->getMessage());
+            \Log::error("Erro ao fazer transferência da conta do usuário ($user_responsible->id); Message: " . $e->getMessage());
             throw $e;
         }
     }
