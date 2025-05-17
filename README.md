@@ -70,8 +70,6 @@ npm install
 npm run build
 ```
 
-> Isso irá gerar os assets de front-end em `public/build`.
-
 ---
 ##  Testes de Integração
 
