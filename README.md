@@ -1,10 +1,10 @@
-# 🏦 GreenBank — Setup com Docker
+#  GreenBank — Setup com Docker
 
 Este guia descreve como configurar e executar o projeto **GreenBank** utilizando Docker, MySQL, Laravel e Vite.
 
 ---
 
-## ✅ Requisitos
+##  Requisitos
 
 - Docker e Docker Compose
 - Node.js (versão 18+ recomendada)
@@ -15,7 +15,7 @@ Este guia descreve como configurar e executar o projeto **GreenBank** utilizando
 
 ---
 
-## 🚀 Passo a passo
+##  Passo a passo
 
 ### 1. Clone o repositório
 
@@ -61,7 +61,7 @@ docker exec -it laravel-app php artisan key:generate
 
 ---
 
-## 🎨 Front-end (Vite)
+##  Front-end (Vite)
 
 O build do front-end deve ser feito **fora do Docker**, na sua máquina:
 
@@ -73,16 +73,32 @@ npm run build
 > Isso irá gerar os assets de front-end em `public/build`.
 
 ---
+##  Testes de Integração
 
-## 🧪 Acessar o sistema
+Este projeto possui testes de integração para verificar o funcionamento completo de fluxos como o cadastro de usuário.
+
+###  Configuração do Ambiente de Testes
+
+Por padrão, os testes utilizam um banco de dados separado chamado `testing`. Para que os testes funcionem corretamente, é necessário criar esse banco de dados no container MySQL.
+
+Execute o comando abaixo para criar o banco `testing`:
+`docker exec -i laravel-db mysql -uroot -prootsecret -e "CREATE DATABASE IF NOT EXISTS testing CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"`
+
+###  Executar os Testes
+
+Para rodar os testes:
+`docker exec -it laravel-app php artisan test`
+
+---
+##  Acessar o sistema
 
 Abra o navegador e acesse:
 
-👉 [http://localhost](http://localhost)
+ [http://localhost](http://localhost)
 
 ---
 
-## 🧰 Comandos úteis
+##  Comandos úteis
 
 - Rodar migrations:
 
@@ -98,9 +114,9 @@ npm run dev
 
 ---
 
-## 🛠️ Stack utilizada
+##  Stack utilizada
 
-- Laravel 10+
+- Laravel 12+
 - PHP 8.2 (FPM)
 - MySQL 8
 - Nginx (via Docker)
@@ -108,6 +124,6 @@ npm run dev
 
 ---
 
-## 👨‍💻 Autor
+##  Autor
 
 Desenvolvido por Andre Vinicius — [github.com/andr-vini](https://github.com/andr-vini)
