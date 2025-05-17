@@ -10,7 +10,7 @@ use Carbon\Carbon;
 class HistoricTransaction extends Model
 {
     protected $fillable = [
-        'type_transaction', 'status', 'balance', 'responsible_user'
+        'type_transaction', 'status', 'balance', 'responsible_user', 'beneficiary_user'
     ];
 
     protected function typeTransaction(): Attribute
@@ -45,7 +45,7 @@ class HistoricTransaction extends Model
     protected function createdAt(): Attribute
     {
         return Attribute::make(
-            get: fn (string $value) => Carbon::createFromDate($value)->format('d/m/Y')
+            get: fn (string $value) => Carbon::createFromDate($value)->format('d/m/Y H:i')
         );
     }
 
@@ -71,5 +71,10 @@ class HistoricTransaction extends Model
     public function responsibleUser(): BelongsTo
     {
         return $this->belongsTo(User::class, 'responsible_user', 'id');
+    }
+
+    public function beneficiaryUser(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'beneficiary_user', 'id');
     }
 }

@@ -7,6 +7,9 @@ use Exception;
 
 class UserService
 {
+    /**
+     * Armazena usuário
+     */
     public function store(array $data): User
     {
         try{

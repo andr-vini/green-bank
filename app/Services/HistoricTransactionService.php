@@ -10,6 +10,9 @@ use Exception;
 
 class HistoricTransactionService
 {
+    /**
+     * Registra o histórico de transações
+     */
     public function createHistoric($data): HistoricTransaction
     {
         try{
@@ -33,11 +36,14 @@ class HistoricTransactionService
         }
     }
 
+    /**
+     * Carrega os dados de histórico de transações feitas pelo usuário autenticado
+     */
     public function loadHistoricTransaction(): Collection
     {
         try{
             $user_id = Auth::id();
-            $historic = Auth::user()->historicTransactions()->get();
+            $historic = Auth::user()->historicTransactions()->with('beneficiaryUser.account')->get();
             return $historic;
         } catch (Exception $e) {
             \Log::error("Erro ao carregar histórico de transação na conta do usuário ($user_id); Message: " . $e->getMessage());
@@ -45,21 +51,34 @@ class HistoricTransactionService
         }
     }
 
+    /**
+     * Reverte as transações, tanto depósito quando transferências
+     * Envolvido por uma transaction para garantir a integridade dos dados, caso lance um erro, executa rollback
+     */
     public function revertTransaction($id): HistoricTransaction
     {
         try{
             DB::beginTransaction();
-            $transaction = HistoricTransaction::with('responsibleUser.account')->findOrFail($id);
+            $transaction = HistoricTransaction::with(['responsibleUser.account', 'beneficiaryUser.account'])->findOrFail($id);
+            $account_responsible = $transaction->responsibleUser->account;
             if($transaction->getRawOriginal('type_transaction') == 0){
-                $account = $transaction->responsibleUser->account;
-                $new_balance = $account->balance - $transaction->getRawOriginal('balance');
-                $account->balance = $new_balance;
+                $new_balance = $account_responsible->balance - $transaction->getRawOriginal('balance');
+                $account_responsible->balance = $new_balance;
                 
-                if($account->save()){
+                if($account_responsible->save()){
                     $transaction->status = 1;
                 }
-            }
+            }elseif($transaction->getRawOriginal('type_transaction') == 1){
+                $account_beneficiary = $transaction->beneficiaryUser->account;
+                $account_responsible->balance += $transaction->getRawOriginal('balance');
+                $account_beneficiary->balance -= $transaction->getRawOriginal('balance');
 
+                if($account_responsible->save() && $account_beneficiary->save()){
+                    $transaction->status = 1;
+                }
+
+            }
+            $transaction->reverted_user = Auth::id();
             $transaction->save();
             DB::commit();
             return $transaction;

@@ -17,6 +17,25 @@ document.addEventListener("DOMContentLoaded", function() {
         makeDeposit(input.value)
     })
 
+    document.querySelector('#save-transfer').addEventListener('click', function(event){
+        let inputAccount = document.querySelector('#account');
+        let account = inputAccount.value;
+
+        let input = masks[1].el.input;
+        let numericValue = masks[1].unmaskedValue;
+
+        if (!numericValue || parseFloat(numericValue.replace(',', '.')) <= 0) {
+            toastr.error('Por favor, insira um valor válido maior que zero');
+            return;
+        }
+
+        makeTransfer(account, input.value);
+    });
+
+    document.querySelector('#showModalTransfer').addEventListener('click', function(event){
+        toggleModal('#make-transfer')
+    })
+
     loadHistoricTransaction();
 })
 
@@ -47,6 +66,38 @@ async function makeDeposit(amount) {
     } catch (error) {
         toastr.error(error.message);
         console.error('Erro no depósito:', error);
+    }
+}
+
+async function makeTransfer(account, amount) {
+    try {
+        const response = await fetch('/transfer', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify({ 
+                'account': account,
+                'amount': amount
+            })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.message || 'Erro ao processar o depósito');
+        }
+
+        toastr.success(data.message);
+        toggleModal('#make-transfer');
+        loadHistoricTransaction();
+        // // console.log(data); // Pode usar pra depuração
+
+    } catch (error) {
+        toastr.error(error.message);
+        // console.error('Erro no depósito:', error);
     }
 }
 
@@ -83,7 +134,7 @@ async function loadHistoricTransaction() {
                 <div class="[&>*]:min-w-30 min-h-8 py-3 ${bg} flex items-center justify-center gap-5">
                     <div>${transaction.type_transaction}</div>
                     <div>${transaction.balance}</div>
-                    <div>-</div>
+                    <div>${transaction.beneficiary_user != null ? transaction.beneficiary_user.account.number : '-'}</div>
                     <div>${transaction.created_at}</div>
                     <div>${transaction.status}</div>
                     <div>${btn}</div>

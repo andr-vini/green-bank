@@ -24,6 +24,8 @@ Route::middleware('auth')->group(function(){
 
     Route::post('/deposit', [AccountController::class, 'makeDeposit'])->name('make.deposit');
 
+    Route::post('/transfer', [AccountController::class, 'makeTransfer'])->name('make.transfer');
+
     Route::get('/load-historic', [AccountController::class, 'loadHistoricTransactions'])->name('load.historic.transactions');
 
     Route::post('/revert-transaction', [AccountController::class, 'revertTransaction'])->name('revert.transaction');
