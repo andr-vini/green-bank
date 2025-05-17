@@ -83,6 +83,8 @@ Execute o comando abaixo para criar o banco `testing`:
 `docker exec -i laravel-db mysql -uroot -prootsecret -e "CREATE DATABASE IF NOT EXISTS testing CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"`
 
 ###  Executar os Testes
+Gere uma key para o arquivo de teste
+`docker exec -it laravel-app php artisan key:generate --env=testing`
 
 Para rodar os testes:
 `docker exec -it laravel-app php artisan test`
