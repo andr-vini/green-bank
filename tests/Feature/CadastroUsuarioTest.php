@@ -9,7 +9,7 @@ use Tests\TestCase;
 
 class CadastroUsuarioTest extends TestCase
 {
-
+    use RefreshDatabase;
     /**
      * A basic feature test example.
      */
