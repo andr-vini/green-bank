@@ -23,4 +23,8 @@ Route::middleware('auth')->group(function(){
     Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
     Route::post('/deposit', [AccountController::class, 'makeDeposit'])->name('make.deposit');
+
+    Route::get('/load-historic', [AccountController::class, 'loadHistoricTransactions'])->name('load.historic.transactions');
+
+    Route::post('/revert-transaction', [AccountController::class, 'revertTransaction'])->name('revert.transaction');
 });

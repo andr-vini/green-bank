@@ -13,6 +13,18 @@ return new class extends Migration
     {
         Schema::create('historic_transactions', function (Blueprint $table) {
             $table->id();
+            $table->tinyInteger('type_transaction')->comment('0- Depósito | 1- Transferência | 2- Saque');
+            $table->tinyInteger('status')->comment('0- Finalizado | 1- Revertido');
+            $table->integer('balance')->comment('Valor em centavos');
+
+            $table->unsignedBigInteger('responsible_user')->comment('usuário responsável por executar transação');
+            $table->foreign('responsible_user')->references('id')->on('users');
+
+            $table->unsignedBigInteger('beneficiary_user')->nullable()->comment('usuário beneficiário da transação usuário que recebe a transação)');
+            $table->foreign('beneficiary_user')->references('id')->on('users');
+
+            $table->unsignedBigInteger('reverted_user')->nullable()->comment('Usuário responsável por reverter a transação');
+            $table->foreign('reverted_user')->references('id')->on('users');
             $table->timestamps();
         });
     }

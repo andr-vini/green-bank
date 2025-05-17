@@ -8,6 +8,19 @@
             <button type="button" class="btn-default  py-3 cursor-pointer w-full" id="showModalDeposit">Depositar</button>
             <button type="button" class="btn-default  py-3 cursor-pointer w-full">Transferir</button>
         </div>
+        <div class="flex flex-col  justify-center mt-10">
+            <div class="[&>*]:min-w-30 min-h-10 bg-white rounded-md flex items-center justify-center gap-5">
+                <div>Tipo</div>
+                <div>Valor</div>
+                <div>Para conta</div>
+                <div>Data</div>
+                <div>Status</div>
+                <div>Ação</div>
+            </div>
+            <div id="body-historic-transactions">
+                
+            </div>
+        </div>
     </main>
 </div>
 

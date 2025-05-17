@@ -16,6 +16,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
         makeDeposit(input.value)
     })
+
+    loadHistoricTransaction();
 })
 
 
@@ -39,10 +41,86 @@ async function makeDeposit(amount) {
 
         toastr.success(data.message);
         toggleModal('#make-deposit');
+        loadHistoricTransaction();
         // console.log(data); // Pode usar pra depuração
 
     } catch (error) {
         toastr.error(error.message);
         console.error('Erro no depósito:', error);
+    }
+}
+
+async function loadHistoricTransaction() {
+    try {
+        const response = await fetch('/load-historic', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+            },
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.message || 'Erro ao carregar histórico');
+        }
+
+        document.querySelector('#body-historic-transactions').innerHTML = '';
+        data.historicTransactions.map((transaction, index) => {
+            let bg = '';
+            if(index % 2 == 0){
+                bg = 'bg-gray-200';
+            }else{
+                bg = 'bg-gray-100';
+            }
+
+            let btn = `<button class="revert btn-default px-3 py-1 cursor-pointer hover:bg-green-500" data-id="${transaction.id}">Reverter</button>`
+            if(transaction.status == 'Revertido'){
+                btn = '-';
+            }
+            document.querySelector('#body-historic-transactions').innerHTML += `
+                <div class="[&>*]:min-w-30 min-h-8 py-3 ${bg} flex items-center justify-center gap-5">
+                    <div>${transaction.type_transaction}</div>
+                    <div>${transaction.balance}</div>
+                    <div>-</div>
+                    <div>${transaction.created_at}</div>
+                    <div>${transaction.status}</div>
+                    <div>${btn}</div>
+                </div>
+            `
+        });
+
+        document.querySelectorAll('button.revert').forEach(element => {
+            element.addEventListener('click', function(event){
+                revertTransaction(event.target.dataset.id)
+            });
+        });
+    } catch (error) {
+        toastr.error(error.message);
+    }
+}
+
+async function revertTransaction(id) {
+    try {
+        const response = await fetch('/revert-transaction', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify({ id })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.message || 'Erro ao carregar histórico');
+        }
+
+        loadHistoricTransaction();
+    } catch (error) {
+        toastr.error(error.message);
     }
 }

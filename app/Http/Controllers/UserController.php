@@ -35,9 +35,7 @@ class UserController extends Controller
             
             return redirect()->route('login')->with('success', 'Usuário cadastrado com sucesso!');
         } catch (\Throwable $e) {
-            \Log::error($e->getMessage());
             return redirect()->back()->withErrors(['Ocorreu um erro ao tentar criar usuário, entre em contato com o administrador']);
         }
-        // dd($request->all());
     }
 }

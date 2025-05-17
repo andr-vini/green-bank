@@ -25,6 +25,7 @@ class AccountService
             return $account;
         } catch (Exception $e) {
             \Log::error("Erro ao criar conta para o usuário id ($user_id); Message: " . $e->getMessage());
+            throw $e;
         }
     }
 
@@ -50,6 +51,8 @@ class AccountService
             }
         } catch (Exception $e) {
             \Log::error("Erro ao fazer depósito na conta do usuário ($user->id); Message: " . $e->getMessage());
+            throw $e;
         }
     }
+    
 }

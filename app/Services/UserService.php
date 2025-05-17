@@ -14,6 +14,7 @@ class UserService
             return $user;
         } catch (Exception $e) {
             \Log::error('Erro ao criar usuário; Message: ' . $e->getMessage());
+            throw $e;
         }
     }
 }
